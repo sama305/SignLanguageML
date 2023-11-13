@@ -1,50 +1,40 @@
+# ~~~ cnn.py ~~~
+# This file creates and trains the convolutional neural network 
+
 import numpy as np
-import pickle
+import dataset
 import tensorflow as tf
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
 from keras.utils import to_categorical
 
-# loading with pickle
+# loading with pickle (doesn't really work)
 # X = pickle.load(open("X_features.pickle", "rb"))
 # y = pickle.load(open("y_labels.pickle", "rb"))
 
-# loading with np
-x_train = np.load("X_features.npy")
-y_train = np.load("y_labels.npy")
-y_train = to_categorical(y_train, num_classes=28)
+def train_model(num_epochs, v_ratio):
+    # loading with np
+    (x_train, y_train) = dataset.load_dataset()
 
-# Define the model
-model = Sequential()
+    # This model has 3 layers with an input shape of 65x65x1 (1 since the images
+    # are grayscale) and can have 28 possible categories
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(65, 65, 1))) # 1 = grayscale
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(28, activation='softmax')) # Softmax, since multiclass
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Add a convolutional layer
-model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(65, 65, 1))) # grayscale
+    # Actually train and save the result of the model
+    model.fit(x_train, y_train, epochs=num_epochs, batch_size=256, validation_split=v_ratio)
+    model.save('slmodel.h5')
 
-# Add a max pooling layer
-model.add(MaxPooling2D((2, 2)))
-
-# Add another convolutional layer
-model.add(Conv2D(64, (3, 3), activation='relu'))
-
-# Add another max pooling layer
-model.add(MaxPooling2D((2, 2)))
-
-# Flatten the output
-model.add(Flatten())
-
-# Add a dense layer
-model.add(Dense(128, activation='relu'))
-
-# Add the output layer
-model.add(Dense(28, activation='softmax'))  # For binary classification, change 1 to the number of classes for multi-class
-
-# Compile the model
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-
-# Display the model summary
-model.fit(x_train, y_train, epochs=2, validation_split=0.2)
-model.summary()
-model.save('slmodel.h5')
+def model_summary():
+    model = load_model('slmodel.h5')
+    model.summary()
 
 # Evaluate the model on the test set
 # accuracy = model.evaluate(x_test, y_test, verbose=0)[1]
