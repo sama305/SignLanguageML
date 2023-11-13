@@ -44,9 +44,7 @@ def show_sample_images():
         path = os.path.join(config.DATASET_DIR, category)
         random_index = random.randint(0, 3000 - 1)
         random_file = os.listdir(path)[random_index]
-        img_array = cv2.imread(os.path.join(path, random_file), cv2.IMREAD_GRAYSCALE)
-        resized_array = cv2.resize(img_array, (config.IMG_SIZE, config.IMG_SIZE))
-        images.append(resized_array)
+        images.append(dataset.process_image(os.path.join(path, random_file), config.IMG_SIZE))
     images = np.array(images)
     i = random.randint(0, 27)
     plt.imshow(images[i], cmap="gray")

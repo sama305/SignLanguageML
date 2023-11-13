@@ -7,6 +7,11 @@ import cv2
 import random
 from keras.utils import to_categorical
 
+def process_image(path, newsize):
+    img_array = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    resized_array = cv2.resize(img_array, (newsize, newsize))
+    return resized_array
+
 def create_training_data(size):
     training_data = []
     prog = 0
@@ -21,9 +26,7 @@ def create_training_data(size):
         class_num = config.CATEGORIES.index(category)
         for img in os.listdir(path):
             prog += 1
-            img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)
-            resized_array = cv2.resize(img_array, (size, size))
-            training_data.append([resized_array, class_num])
+            training_data.append([process_image(os.path.join(path, img), size), class_num])
             print(f'{prog} of {config.DATA_NUM} generated ({prog / config.DATA_NUM *100:.0f}%)', end="\r")
     print("\nShuffling...")
     
