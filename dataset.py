@@ -1,31 +1,31 @@
 
 
 import numpy as np
-import os, sys
+import os
+import config
 import cv2
-import pickle
 import random
 from keras.utils import to_categorical
 
-def create_training_data(dataset_path, categories, size):
+def create_training_data(size):
     training_data = []
     prog = 0
 
-    print("Processing dataset:")
+    print("Compiling dataset:")
 
     # In this for loop nest, we are going through each image in each categorical
     # folder and (1) turning them into grayscale (2) resizing them to a desired
     # size
-    for category in categories:
-        path = os.path.join(dataset_path, category)
-        class_num = categories.index(category)
+    for category in config.CATEGORIES:
+        path = os.path.join(config.DATASET_DIR, category)
+        class_num = config.CATEGORIES.index(category)
         for img in os.listdir(path):
             prog += 1
             img_array = cv2.imread(os.path.join(path, img), cv2.IMREAD_GRAYSCALE)
             resized_array = cv2.resize(img_array, (size, size))
             training_data.append([resized_array, class_num])
-            print(str(round(prog / 84000.0 * 100, 2)) + "%", end="\r")
-    print("100%")
+            print(f'{prog} of {config.DATA_NUM} generated ({prog / config.DATA_NUM *100:.0f}%)', end="\r")
+    print("\nShuffling...")
     
     # Shuffling data to make all categories equally likely
     random.shuffle(training_data)
@@ -34,6 +34,7 @@ def create_training_data(dataset_path, categories, size):
     # so we can easily extract the features (X) and labels (y) into separate
     # lists. It is important we do this after shuffling or else the labels
     # would be wrong.
+    print("Structuring...")
     y = []
     X = []
     for features, label in training_data:
@@ -46,14 +47,15 @@ def create_training_data(dataset_path, categories, size):
     y = to_categorical(y, num_classes=28)
 
     # Finally, we save these into numpy files
-    np.save("X_features.npy", X)
-    np.save("y_labels.npy", y)
+    print("Saving...")
+    np.save(config.TR_FEAT_FILENAME, X)
+    np.save(config.TR_LABL_FILENAME, y)
 
-def create_testing_data(testset_path, categories, size):
+def create_testing_data(categories, size):
     pass
 
 def load_dataset():
-    return (np.load("X_features.npy"), np.load("y_labels.npy"))
+    return (np.load(config.TR_FEAT_FILENAME), np.load(config.TR_LABL_FILENAME))
 
 # Alternate saving method (???) doesn't really work
 # pickle_out = open("X_features.pickle", "wb")

@@ -1,107 +1,95 @@
-# main.py
+# ~~~ main.py ~~~
 # Main entry point, contains a GUI for casting commands on the program. From
 # this file you can train the model, generate the dataset/testing files, and
 # test the model, among other things.
 
 import os
 import dataset
+import config
 import cnn
 import cv2
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-CWD = os.getcwd()
-# Directory where all category folders will be found
-DATASET_DIR = os.path.join(CWD, "dataset")
-
-# Category names. Each name has a corresponding index (e.g., A=0, B=1, etc.)
-CATEGORIES = [
-    "A", "B", "C", "D", "E", "F",
-    "G", "H", "I", "J", "K", "L",
-    "M", "N", "O", "P", "Q", "R",
-    "S", "T", "U", "V", "W", "X",
-    "Y", "Z", "space", "nothing"
-]
-
-# Input shape height and width
-IMG_SIZE = 65
-
-# Number of epochs by default
-NUM_EPOCHS = 3
-
-# Validation set ratio
-VAL_RATIO = 0.2
+def gen_all():
+    dataset.create_training_data(config.IMG_SIZE)
+    print("<!> All images sucessfully processed!")
+    print("Creating/compiling/training the model...")
+    cnn.train_model(config.NUM_EPOCHS, config.VAL_RATIO)
 
 def gen_dataset_prompt():
-    size = input("Image size (empty for default, " + str(IMG_SIZE) + "): ")
-    if (size):
-        size = int(size)
-    else:
-        size = IMG_SIZE
-    
-    dataset.create_training_data(DATASET_DIR, CATEGORIES, IMG_SIZE)
-    print("<!> Created/updated files: X_features.npy, y_labels.npy <!>\n")
+    dataset.create_training_data(config.IMG_SIZE)
+    print(f"<!> Created/updated files: {config.TR_FEAT_FILENAME}, {config.TR_LABL_FILENAME}")
 
 def train_model_prompt():
-    epochs = input("# of epochs (empty for default, " + str(NUM_EPOCHS) + "): ")
+    epochs = input("# of epochs (empty for default, " + str(config.NUM_EPOCHS) + "): ")
     if (epochs):
         epochs = int(epochs)
     else:
-        epochs = NUM_EPOCHS
+        epochs = config.NUM_EPOCHS
 
-    vset = input("# of epochs (empty for default, " + str(VAL_RATIO) + "): ")
+    vset = input("Validation set ratio (empty for default, " + str(config.VAL_RATIO) + "): ")
     if (vset):
-        vset = float(epochs)
+        vset = float(vset)
     else:
-        vset = VAL_RATIO
+        vset = config.VAL_RATIO
 
     cnn.train_model(epochs, vset)
+    print(f"<!> Created/updated files: {config.MODEL_FILENAME}")
 
 def show_sample_images():
     images = []
-    for category in CATEGORIES:
-        path = os.path.join(DATASET_DIR, category)
+    for category in config.CATEGORIES:
+        path = os.path.join(config.DATASET_DIR, category)
         random_index = random.randint(0, 3000 - 1)
         random_file = os.listdir(path)[random_index]
         img_array = cv2.imread(os.path.join(path, random_file), cv2.IMREAD_GRAYSCALE)
-        images.append(img_array)
+        resized_array = cv2.resize(img_array, (config.IMG_SIZE, config.IMG_SIZE))
+        images.append(resized_array)
     images = np.array(images)
-    i = random.randint(0, 28)
+    i = random.randint(0, 27)
     plt.imshow(images[i], cmap="gray")
-    plt.title("Category: " + CATEGORIES[i])
+    plt.title("Category: " + config.CATEGORIES[i])
     plt.show()
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!
 # ! MAIN PROGRAM ENTRY HERE !
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-if (os.path.exists(os.path.join(CWD, "X_features.npy")) or
-    os.path.exists(os.path.join(CWD, "X_features.npy")) or
-    os.path.exists(os.path.join(CWD, "X_features.npy")) or
-    os.path.exists(os.path.join(CWD, "X_features.npy"))):
-    pass
+if (__name__ == "__main__"):
+    # If a missing training file or model is detected, prompt user
+    if not (os.path.exists(os.path.join(config.CWD, config.TR_FEAT_FILENAME)) and
+        os.path.exists(os.path.join(config.CWD, config.TR_LABL_FILENAME)) and
+        os.path.exists(os.path.join(config.CWD, config.MODEL_FILENAME))):
+        print("There seems to be one or more missing training/model files.")
+        i = input("Would you like to generate/update ALL model/training files (this will overwrite any existing data) [y/n]:")
+        if (str(i).lower() == "y"):
+            print("<!> Generating all necessary files with default values (this can take some time!)...")
+            gen_all()
 
-print ("Welcome to the interactive GUI for SignLanguageML")
-while (True):
+    print ("Welcome to the interactive GUI for SignLanguageML")
     print("Please pick an option:")
     print("\t0) Quit")
     print("\t1) Generate dataset")
     print("\t2) Train the model on the dataset")
     print("\t3) Retrieve a model summary")
     print("\t4) Observe a random sample")
-    try:
-        inp = int(input(">> "))
-    except:
-        inp = -1
+    while (True):
+        try:
+            inp = int(input(">> "))
+        except:
+            inp = -1
 
-    if (inp == 0):
-        break
-    elif (inp == 1):
-        gen_dataset_prompt()
-    elif (inp == 2):
-        train_model_prompt()
-    elif (inp == 3):
-        cnn.model_summary()
-    elif (inp == 4):
-        show_sample_images()
+        if (inp == 0):
+            break
+        elif (inp == 1):
+            gen_dataset_prompt()
+        elif (inp == 2):
+            train_model_prompt()
+        elif (inp == 3):
+            cnn.model_summary()
+        elif (inp == 4):
+            show_sample_images()
+
+        print()
