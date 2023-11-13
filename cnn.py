@@ -1,44 +1,52 @@
+import numpy as np
+import pickle
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from keras.utils import to_categorical
 
+# loading with pickle
+# X = pickle.load(open("X_features.pickle", "rb"))
+# y = pickle.load(open("y_labels.pickle", "rb"))
 
-# Load the CIFAR-10 dataset
-(X, y), _ = keras.datasets.cifar10.load_data()
+# loading with np
+x_train = np.load("X_features.npy")
+y_train = np.load("y_labels.npy")
+y_train = to_categorical(y_train, num_classes=28)
 
-# Convert labels to one-hot encoding if needed
-# y = keras.utils.to_categorical(y, num_classes=10)
+# Define the model
+model = Sequential()
 
-# Split the dataset into training and validation sets
-X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-# Convert pixel values to a range between 0 and 1
-X_train = X_train.astype('float32') / 255
+# Add a convolutional layer
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(65, 65, 1))) # grayscale
 
-# Calculate the mean pixel value of the training set
-mean_pixel = X_train.mean(axis=(0, 1, 2))
+# Add a max pooling layer
+model.add(MaxPooling2D((2, 2)))
 
-# Subtract the mean pixel value from the images (zero-centering)
-X_train -= mean_pixel
+# Add another convolutional layer
+model.add(Conv2D(64, (3, 3), activation='relu'))
 
-# Define the CNN model
-model = keras.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.Flatten(),
-    layers.Dense(64, activation='relu'),
-    layers.Dense(10, activation='softmax')
-])
+# Add another max pooling layer
+model.add(MaxPooling2D((2, 2)))
+
+# Flatten the output
+model.add(Flatten())
+
+# Add a dense layer
+model.add(Dense(128, activation='relu'))
+
+# Add the output layer
+model.add(Dense(28, activation='softmax'))  # For binary classification, change 1 to the number of classes for multi-class
 
 # Compile the model
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Train the model on the training data
-model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val))
-model.save('slmodel.keras')
+# Display the model summary
+model.fit(x_train, y_train, epochs=2, validation_split=0.2)
+model.summary()
+model.save('slmodel.h5')
+
+# Evaluate the model on the test set
+# accuracy = model.evaluate(x_test, y_test, verbose=0)[1]
+# print(f'Test Accuracy: {accuracy * 100:.2f}%')
 
