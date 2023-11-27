@@ -54,9 +54,6 @@ def create_training_data(size):
     np.save(config.TR_FEAT_FILENAME, X)
     np.save(config.TR_LABL_FILENAME, y)
 
-def create_testing_data(categories, size):
-    pass
-
 def load_dataset():
     return (np.load(config.TR_FEAT_FILENAME), np.load(config.TR_LABL_FILENAME))
 

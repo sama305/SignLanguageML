@@ -8,6 +8,7 @@ import dataset
 import config
 import cnn
 import cv2
+import test
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -51,6 +52,18 @@ def show_sample_images():
     plt.title("Category: " + config.CATEGORIES[i])
     plt.show()
 
+def test_img_prompt():
+    choice = input("Do you want to test all images? [Y/n]: ")
+    if choice.lower() == 'y':
+        test.test_many_imgs()
+    else:
+        path = input("Filename: ")
+        pred = test.test_img(os.path.join(config.TESTSET_DIR, path))
+        plt.imshow(dataset.process_image(os.path.join(config.TESTSET_DIR, path), config.IMG_SIZE), cmap="gray")
+        plt.title(path + " --predicted-> " + pred)
+        plt.show()
+
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!
 # ! MAIN PROGRAM ENTRY HERE !
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -73,6 +86,7 @@ if (__name__ == "__main__"):
     print("\t2) Train the model on the dataset")
     print("\t3) Retrieve a model summary")
     print("\t4) Observe a random sample")
+    print("\t5) Make a prediction")
     while (True):
         try:
             inp = int(input(">> "))
@@ -89,5 +103,7 @@ if (__name__ == "__main__"):
             cnn.model_summary()
         elif (inp == 4):
             show_sample_images()
+        elif (inp == 5):
+            test_img_prompt()
 
         print()

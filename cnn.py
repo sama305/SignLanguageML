@@ -31,7 +31,7 @@ def train_model(num_epochs, v_ratio):
     model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D((2, 2)))
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(28, activation='relu'))
     model.add(Dense(len(config.CATEGORIES), activation='softmax')) # Softmax, since multiclass
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
