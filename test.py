@@ -1,8 +1,6 @@
-import tensorflow as tf
 import dataset
 import config
 import os
-import numpy as np
 from keras.models import load_model
 
 def test_img(path):

@@ -5,7 +5,6 @@ import dataset
 import config
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
-from keras.utils import to_categorical
 
 # loading with pickle (doesn't really work)
 # X = pickle.load(open("X_features.pickle", "rb"))

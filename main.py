@@ -7,7 +7,6 @@ import os
 import dataset
 import config
 import cnn
-import cv2
 import test
 import random
 import numpy as np
