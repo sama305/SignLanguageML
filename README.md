@@ -9,10 +9,16 @@ After cloning this repository, there are a few steps you need to follow to get t
 First you must install **Python v3.11**. You can install it [here](https://www.python.org/downloads/release/python-3116/).
 
 Next, you must install/upgrade several packages using `pip` (if you don't have pip, install/upgrade it with `python3.11 -m pip install -U pip`):
-* NumPy (`python3.11 -m pip -U install numpy`)
-* Keras (`python3.11 -m pip -U install keras`)
-* cv2 (`python3.11 -m pip -U install cv2`)
-* MatPlotLib (`python3.11 -m pip install -U matplotlib`)
+* NumPy
+* Keras
+* cv2
+* MatPlotLib
+```
+python3.11 -m pip -U install numpy
+python3.11 -m pip -U install keras
+python3.11 -m pip -U install cv2
+python3.11 -m pip install -U matplotlib
+```
 
 ## Usage
 
