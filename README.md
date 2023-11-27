@@ -6,7 +6,7 @@ This project was created for CIS4930.
 
 After cloning this repository, there are a few steps you need to follow to get this proejct set up.
 
-First you must install **Python v3.11**. You can install it (here)[https://www.python.org/downloads/release/python-3116/].
+First you must install **Python v3.11**. You can install it [here](https://www.python.org/downloads/release/python-3116/).
 
 Next, you must install/upgrade several packages using `pip` (if you don't have pip, install/upgrade it with `python3.11 -m pip install -U pip`):
 * NumPy (`python3.11 -m pip -U install numpy`)
