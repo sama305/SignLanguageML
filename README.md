@@ -16,9 +16,9 @@ Next, you must install/upgrade several packages using `pip` (if you don't have p
 * cv2
 * MatPlotLib
 ```
-python3.11 -m pip -U install numpy
-python3.11 -m pip -U install keras
-python3.11 -m pip -U install cv2
+python3.11 -m pip install -U numpy
+python3.11 -m pip install -U keras
+python3.11 -m pip install -U cv2
 python3.11 -m pip install -U matplotlib
 ```
 
