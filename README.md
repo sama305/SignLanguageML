@@ -6,7 +6,9 @@ This project was created for CIS4930.
 
 After cloning this repository, there are a few steps you need to follow to get this proejct set up.
 
-First you must install **Python v3.11**. You can install it [here](https://www.python.org/downloads/release/python-3116/).
+First, and most importantly, you must install the dataset [here](https://drive.google.com/drive/folders/1Nr4YSa6-LoxhVAkVdENXDAv8BX5Ab0xk?usp=drive_link). After you install it, **place the dataset folder in the root of this project**, meaning the highest level.
+
+After you must install **Python v3.11**. You can install it [here](https://www.python.org/downloads/release/python-3116/) (the version is important as this is the most recent version supported by Keras).
 
 Next, you must install/upgrade several packages using `pip` (if you don't have pip, install/upgrade it with `python3.11 -m pip install -U pip`):
 * NumPy
@@ -51,4 +53,4 @@ If it is your first time using the program, it will suggest that you generate th
 6. Prediction (`5`)
     * This command allows you to test the accuracy of the model with test images.
     * Test images are provided but you could theoretically add your own, as all preprocessing is done to the images automatically.
-    * You have two options, single test and bulk test. Single test will ask for an input (in the format of `X_test.jpg`, where X would be any letter along with `nothing` or `space`) and conduct a prediction on that. Bulk test will test all images and give you the accuracy as well as some other stats. It will also output an accuracy graph.
+    * You have two options, single test and bulk test. Single test will ask for an input (in the format of `X_test.jpg`, where X would be any letter along with `nothing` or `space`) and conduct a prediction on that. Bulk test will test all images and give you the accuracy.

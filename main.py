@@ -54,7 +54,7 @@ def show_sample_images():
 def test_img_prompt():
     choice = input("Do you want to test all images? [Y/n]: ")
     if choice.lower() == 'y':
-        test.test_many_imgs()
+        test.test_img_bulk()
     else:
         path = input("Filename: ")
         pred = test.test_img(os.path.join(config.TESTSET_DIR, path))

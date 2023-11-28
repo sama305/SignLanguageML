@@ -22,7 +22,7 @@ CATEGORIES = [
 IMG_SIZE = 65
 
 # Default umber of epochs by default
-NUM_EPOCHS = 5
+NUM_EPOCHS = 10
 
 # Validation set ratio
 VAL_RATIO = 0.2
